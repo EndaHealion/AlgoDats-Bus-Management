@@ -1,0 +1,13 @@
+
+public class Main {
+	public static void main(String[] args) {
+		System.out.println("Hi :)");
+		
+		// Basic tests for search. @TEMP: 
+		BusStopSearch search = new BusStopSearch("inputs/stops.txt");
+		String stringToFind = "WB WESTMINSTER HWY AT 11000 BLOCK";
+		boolean found = search.trieTreeRoot.isInTree(stringToFind);
+		System.out.printf("can we find %s in the search: %b\n", stringToFind, found);
+	}
+
+}

@@ -33,108 +33,58 @@ public class BusStopSearch {
 	public class TernarySearchTree {
 		public TSTNode root = null;
 
-		// generates tree from input file... @TEMP: put the code that gets the stop names in a function
-		//                                            with error handling
+		// generates tree from input file... @TEMP: put the code that gets the stop
+		// names in a function
+		// with error handling
 		TernarySearchTree(String fileLocation) {
 			root = new TSTNode();
 
-			BufferedReader reader;
-			try {
-				reader = new BufferedReader(new FileReader(fileLocation));
-				// read line to get rid of column descriptors in CSV file...
+			// NOTE(Enda): This might be a bad idea because all buss stop locations will be
+			//   in memory in two places at the same time...
+			// Maybe revert back to doing this with the getStopNamesFromFile inlined
+			ArrayList<String> stopNames = getStopNamesFromFile(fileLocation);
 
-				String line = reader.readLine();
-				if (line == null)
-					return; // if line is null then we have an error(no data)... @TEMP: Handle later
-
-				int stopCount = 0;
-				line = reader.readLine();
-				while (line != null) {
-					// System.out.println(line);
-
-					// Skip until "stop_name", which is in the third column...
-					int commasToSkip = 2;
-					int lineLen = line.length();
-					int currentChar = 0;
-					int commasSeen = 0;
-					for (; commasSeen < commasToSkip && currentChar < lineLen; currentChar++) {
-						if (line.charAt(currentChar) == ',') {
-							commasSeen++;
-						}
-					}
-
-					// Gather stop name
-					StringBuilder stopName = new StringBuilder();
-					while (currentChar < lineLen) {
-						if (line.charAt(currentChar) == ',') {
-							break;
-						}
-						stopName.append(line.charAt(currentChar));
-						currentChar++;
-					}
-
-					// Manipulate the stop name to make it more search able...
-					// Move: wb,nb,sb,eb from the start to the end
-					if (stopName.length() > 3) {
-						if (stopName.charAt(1) == 'B' && stopName.charAt(2) == ' ') {
-							switch (stopName.charAt(0)) {
-							case 'W':
-							case 'N':
-							case 'S':
-							case 'E':
-								stopName.delete(0, 3);
-								stopName.append(' ');
-								stopName.append(stopName.charAt(0));
-								stopName.append('B');
-								break;
-
-							default:
-							}
-						}
-					}
-
-					// System.out.printf("[%d] %s\n", stopCount, stopName.toString());
-
-					// Insert word into tree...
-					insert(stopName.toString());
-
-					stopCount++;
-					line = reader.readLine();
-				}
-
-				reader.close();
-			} catch (IOException e) {
-				System.out.println("Could not open file at location: " + fileLocation);
+			// Insert words into tree...
+			for (String stopName : stopNames) {
+				insert(stopName.toString());
 			}
 		}
 
 		// insert new word into tree
 		public void insert(String word) {
-			root = insert(root, word.toCharArray(), 0);
+			if (word == null) {
+				return;
+			}
+			String upperCaseWord = word.toUpperCase();
+			root = insert(root, upperCaseWord.toCharArray(), 0);
 		}
 
-		private TSTNode insert(TSTNode r, char[] word, int pointer) {
-			if (r == null)
-				r = new TSTNode(word[pointer]);
+		private TSTNode insert(TSTNode node, char[] word, int pointer) {
+			if (node == null)
+				node = new TSTNode(word[pointer]);
 
-			if (word[pointer] < r.value) {
-				r.left = insert(r.left, word, pointer);
-			} else if (word[pointer] > r.value) {
-				r.right = insert(r.right, word, pointer);
+			if (word[pointer] < node.value) {
+				node.left = insert(node.left, word, pointer);
+			} else if (word[pointer] > node.value) {
+				node.right = insert(node.right, word, pointer);
 			} else {
 				if (pointer + 1 < word.length) {
-					r.middle = insert(r.middle, word, pointer + 1);
+					node.middle = insert(node.middle, word, pointer + 1);
 				} else {
-					r.isEnd = true;
+					node.isEnd = true;
 				}
 			}
 
-			return r;
+			return node;
 		}
 
 		// Return is word is in tree
 		public boolean search(String word) {
-			return search(root, word.toCharArray(), 0);
+			if (word == null || word.length() == 0) {
+				return false;
+			}
+			String upperCaseWord = word.toUpperCase();
+			return search(root, upperCaseWord.toCharArray(), 0);
 		}
 
 		private boolean search(TSTNode node, char[] word, int pointer) {
@@ -157,9 +107,10 @@ public class BusStopSearch {
 			}
 		}
 
-		// Traverses the tree according to the prefix, and returns the last node it was on
+		// Traverses the tree according to the prefix, and returns the last node it was
+		// on
 		public TSTNode getPrefixNode(TSTNode node, String prefix, int depth) {
-			if (node == null || prefix.length() == 0) {
+			if (node == null || prefix == null || prefix.length() == 0) {
 				return null;
 			}
 
@@ -173,10 +124,10 @@ public class BusStopSearch {
 			} else
 				return node;
 		}
-		
+
 		// Traverse the tree from a given root and add words to the list
 		public void getWordsWithPrefix(TSTNode root, StringBuilder prefix, ArrayList<String> matches) {
-			if (root == null || matches == null || prefix == null) {
+			if (root == null || matches == null || prefix == null || prefix.length() == 0) {
 				return;
 			}
 
@@ -197,7 +148,11 @@ public class BusStopSearch {
 
 	// returns if the stop name is in the tree. Full character match.
 	public boolean isInDataBase(String stopName) {
-		return searchTree.search(stopName);
+		if (stopName == null || stopName.length() == 0) {
+			return false;
+		}
+		String upperCaseStopName = stopName.toUpperCase();
+		return searchTree.search(upperCaseStopName);
 	}
 
 	// returns all stop names that contains the prefix provided.
@@ -222,4 +177,101 @@ public class BusStopSearch {
 		return matches;
 	}
 
+	// Manipulate the stop name to make it more search able...
+	// Move wb,nb,sb,eb from the start to the end
+	private void makeStopSearchable(StringBuilder stopName) {
+		if (stopName == null) {
+			return;
+		}
+		
+		int numPrefixChars = 3;
+		if (stopName.length() > numPrefixChars) {
+			if (stopName.charAt(1) == 'B' && stopName.charAt(2) == ' ') {
+				switch (stopName.charAt(0)) {
+				case 'W':
+				case 'N':
+				case 'S':
+				case 'E':
+					stopName.delete(0, 3);
+					stopName.append(' ');
+					stopName.append(stopName.charAt(0));
+					stopName.append('B');
+					break;
+
+				default:
+				}
+			}
+		}
+	}
+
+	// get all stop names from file
+	private ArrayList<String> getStopNamesFromFile(String fileLocation) {
+		if (fileLocation == null) {
+			return null;
+		}
+		
+		ArrayList<String> stopNames = new ArrayList<String>();
+		int currentLine = 1;
+		int failedReads = 0;
+		BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader(fileLocation));
+
+			// read line to get rid of column descriptors in CSV file...
+			String line = reader.readLine();
+			if (line == null) {
+				System.out.println("[BusStopSearch] WARNING: No data in file: " + fileLocation);
+				reader.close();
+				return null;
+			}
+
+			line = reader.readLine();
+			while (line != null) {
+				// System.out.println(line);
+
+				// Skip until "stop_name", which is in the third column...
+				int commasToSkip = 2;
+				int lineLen = line.length();
+				int currentChar = 0;
+				int commasSeen = 0;
+				for (; commasSeen < commasToSkip && currentChar < lineLen; currentChar++) {
+					if (line.charAt(currentChar) == ',') {
+						commasSeen++;
+					}
+				}
+
+				StringBuilder stopName = new StringBuilder();
+				if (commasSeen >= commasToSkip) {
+					// Gather stop name
+					while (currentChar < lineLen) {
+						if (line.charAt(currentChar) == ',') {
+							break;
+						}
+						stopName.append(Character.toUpperCase(line.charAt(currentChar)));
+						currentChar++;
+					}
+
+					makeStopSearchable(stopName);
+					stopNames.add(stopName.toString());
+				} else {
+					System.out.println("[BusStopSearch] WARNING: No stop name on line: " + currentLine);
+					failedReads++;
+				}
+
+				currentLine++;
+				line = reader.readLine();
+			}
+
+			if (failedReads > 0) {
+				System.out.println("[BusStopSearch] WARNING: Could not read " + failedReads + " stop names from file.");
+			}
+			System.out.println("");
+
+			reader.close();
+			return stopNames;
+		} catch (IOException e) {
+			System.out.println("Could not open file at location: " + fileLocation);
+			return null;
+		}
+	}
 }

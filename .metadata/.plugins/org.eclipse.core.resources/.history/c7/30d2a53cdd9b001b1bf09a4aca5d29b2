@@ -1,0 +1,16 @@
+
+public class Main {
+	public static void main(String[] args) {
+		System.out.println("Hi :)");
+		
+		
+		
+		// Basic tests for search. @TEMP: Maybe replace with JUnit tests later...
+		BusStopSearch search = new BusStopSearch("inputs/stops.txt");
+		String stringToFind = "WESTMINSTER HWY AT 11000 BLOCK WB";
+		boolean wasFound = search.isInDataBase(stringToFind);
+		search.getMatches("WES");
+		System.out.println(wasFound);
+	}
+
+}

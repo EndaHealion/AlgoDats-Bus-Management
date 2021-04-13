@@ -10,13 +10,13 @@ public class Main {
 		BusStopSearch search = new BusStopSearch("inputs/stops.txt");
 		String stringToFind = "WESTMINSTER HWY AT 11000 BLOCK WB";
 		String prefixSearchWord = "WESTM";
-		boolean wasFound = search.isInDataBase(stringToFind);
-		ArrayList<String> finds = search.findStops(prefixSearchWord);
 		System.out.println("List of words with prefix: \"" + prefixSearchWord + "\":");
+		ArrayList<String> finds = search.findStops(prefixSearchWord);
 		for (String s : finds) {
 			System.out.println(s);
 		}
-		System.out.println(wasFound);
+		boolean wasFound = search.isInDataBase(stringToFind);
+		System.out.println("Was \"" + stringToFind + "\" found in the tree: " + wasFound);
 	}
 
 }

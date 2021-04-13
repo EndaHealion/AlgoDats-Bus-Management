@@ -33,6 +33,8 @@ public class BusStopSearch {
 	public class TernarySearchTree {
 		public TSTNode root = null;
 
+		// generates tree from input file... @TEMP: put the code that gets the stop names in a function
+		//                                            with error handling
 		TernarySearchTree(String fileLocation) {
 			root = new TSTNode();
 
@@ -106,11 +108,12 @@ public class BusStopSearch {
 			}
 		}
 
+		// insert new word into tree
 		public void insert(String word) {
 			root = insert(root, word.toCharArray(), 0);
 		}
 
-		public TSTNode insert(TSTNode r, char[] word, int pointer) {
+		private TSTNode insert(TSTNode r, char[] word, int pointer) {
 			if (r == null)
 				r = new TSTNode(word[pointer]);
 
@@ -129,6 +132,7 @@ public class BusStopSearch {
 			return r;
 		}
 
+		// Return is word is in tree
 		public boolean search(String word) {
 			return search(root, word.toCharArray(), 0);
 		}
@@ -153,49 +157,36 @@ public class BusStopSearch {
 			}
 		}
 
-		private TSTNode getPrefixNode(TSTNode node, char[] word, int pointer) {
-			if (node == null) {
+		// Traverses the tree according to the prefix, and returns the last node it was on
+		public TSTNode getPrefixNode(TSTNode node, String prefix, int depth) {
+			if (node == null || prefix.length() == 0) {
 				return null;
 			}
 
-			if (word[pointer] < node.value) {
-				return getPrefixNode(node.left, word, pointer);
-			} else if (word[pointer] > node.value) {
-				return getPrefixNode(node.right, word, pointer);
-			} else {
-				if (node.value == word[pointer] && pointer == word.length - 1) {
-					return node;
-				} else if (pointer == word.length - 1) {
-					return null;
-				} else {
-					return getPrefixNode(node.middle, word, pointer + 1);
-				}
-			}
+			char c = prefix.charAt(depth);
+			if (c < node.value) {
+				return getPrefixNode(node.left, prefix, depth);
+			} else if (c > node.value) {
+				return getPrefixNode(node.right, prefix, depth);
+			} else if (depth < prefix.length() - 1) {
+				return getPrefixNode(node.middle, prefix, depth + 1);
+			} else
+				return node;
 		}
-
-		public TSTNode getPrefixNode(TSTNode root, String prefix) {
-			if (prefix == null || root == null) {
-				return null;
+		
+		// Traverse the tree from a given root and add words to the list
+		public void getWordsWithPrefix(TSTNode root, StringBuilder prefix, ArrayList<String> matches) {
+			if (root == null || matches == null || prefix == null) {
+				return;
 			}
 
-			System.out.println(prefix);
-
-			TSTNode current = root;
-			int prefixLen = prefix.length();
-			for (int index = 0; index < prefixLen; index++) {
-				char c = prefix.charAt(index);
-				if (current.left != null && current.left.value == c) {
-					current = current.left;
-				} else if (current.middle != null && current.middle.value == c) {
-					current = current.middle;
-				} else if (current.right != null && current.right.value == c) {
-					current = current.right;
-				} else {
-					return null;
-				}
+			getWordsWithPrefix(root.left, prefix, matches);
+			if (root.isEnd) {
+				matches.add(prefix.toString() + root.value);
 			}
-
-			return current;
+			getWordsWithPrefix(root.middle, prefix.append(root.value), matches);
+			prefix.deleteCharAt(prefix.length() - 1);
+			getWordsWithPrefix(root.right, prefix, matches);
 		}
 
 	}
@@ -204,31 +195,20 @@ public class BusStopSearch {
 		searchTree = new TernarySearchTree(fileLocation);
 	}
 
+	// returns if the stop name is in the tree. Full character match.
 	public boolean isInDataBase(String stopName) {
 		return searchTree.search(stopName);
 	}
 
-	private void getWordsWithPrefix(TSTNode x, StringBuilder prefix, ArrayList<String> matches) {
-		if (x == null) {
-			return;
-		}
-
-		getWordsWithPrefix(x.left, prefix, matches);
-		if (x.isEnd) {
-			matches.add(prefix.toString() + x.value);
-		}
-		getWordsWithPrefix(x.middle, prefix.append(x.value), matches);
-		prefix.deleteCharAt(prefix.length() - 1);
-		getWordsWithPrefix(x.right, prefix, matches);
-	}
-
+	// returns all stop names that contains the prefix provided.
 	public ArrayList<String> findStops(String prefix) {
+		ArrayList<String> matches = new ArrayList<String>();
 		if (prefix == null || prefix.length() == 0 || searchTree == null || searchTree.root == null) {
-			return null;
+			return matches;
 		}
 
-		ArrayList<String> matches = new ArrayList<String>();
-		TSTNode prefixNode = get(searchTree.root, prefix, 0);
+		// find prefix root node
+		TSTNode prefixNode = searchTree.getPrefixNode(searchTree.root, prefix, 0);
 		if (prefixNode == null) {
 			return matches;
 		}
@@ -236,25 +216,10 @@ public class BusStopSearch {
 			matches.add(prefix);
 		}
 
-		getWordsWithPrefix(prefixNode.middle, new StringBuilder(prefix), matches);
+		// get all words starting from the prefix root node
+		searchTree.getWordsWithPrefix(prefixNode.middle, new StringBuilder(prefix), matches);
 
 		return matches;
-	}
-
-	private TSTNode get(TSTNode node, String key, int d) {
-		if (node == null || key.length() == 0) {
-			return null;
-		}
-
-		char c = key.charAt(d);
-		if (c < node.value) {
-			return get(node.left, key, d);
-		} else if (c > node.value) {
-			return get(node.right, key, d);
-		} else if (d < key.length() - 1) {
-			return get(node.middle, key, d + 1);
-		} else
-			return node;
 	}
 
 }

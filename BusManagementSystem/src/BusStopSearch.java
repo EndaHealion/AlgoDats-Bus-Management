@@ -5,8 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class BusStopSearch {
-
-	TernarySearchTree searchTree = null;
+	private static TernarySearchTree searchTree = null;
 
 	public class TSTNode {
 		public char value;
@@ -40,7 +39,7 @@ public class BusStopSearch {
 			root = new TSTNode();
 
 			// NOTE(Enda): This might be a bad idea because all buss stop locations will be
-			//   in memory in two places at the same time...
+			// in memory in two places at the same time...
 			// Maybe revert back to doing this with the getStopNamesFromFile inlined
 			ArrayList<String> stopNames = getStopNamesFromFile(fileLocation);
 
@@ -147,7 +146,7 @@ public class BusStopSearch {
 	}
 
 	// returns if the stop name is in the tree. Full character match.
-	public boolean isInDataBase(String stopName) {
+	public static boolean isInDataBase(String stopName) {
 		if (stopName == null || stopName.length() == 0) {
 			return false;
 		}
@@ -156,7 +155,7 @@ public class BusStopSearch {
 	}
 
 	// returns all stop names that contains the prefix provided.
-	public ArrayList<String> findStops(String prefix) {
+	public static ArrayList<String> findStops(String prefix) {
 		ArrayList<String> matches = new ArrayList<String>();
 		if (prefix == null || prefix.length() == 0 || searchTree == null || searchTree.root == null) {
 			return matches;
@@ -183,7 +182,7 @@ public class BusStopSearch {
 		if (stopName == null) {
 			return;
 		}
-		
+
 		int numPrefixChars = 3;
 		if (stopName.length() > numPrefixChars) {
 			if (stopName.charAt(1) == 'B' && stopName.charAt(2) == ' ') {
@@ -209,7 +208,7 @@ public class BusStopSearch {
 		if (fileLocation == null) {
 			return null;
 		}
-		
+
 		ArrayList<String> stopNames = new ArrayList<String>();
 		int currentLine = 1;
 		int failedReads = 0;

@@ -9,6 +9,17 @@ public class ArrivalTimeSearch
 	private static ArrayList<tripDetails> trips = null;
 	private static boolean validFile = true;
 	
+	//Invalid constants
+	private static final int INVALID_INT = -1;
+	private static final String INVALID_STRING = null;
+	private static final int[] INVALID_INT_ARRAY = null;
+	
+	//Time constants
+	private static final int MAX_HOURS = 23;
+	private static final int MAX_MINUTES = 59;
+	private static final int MAX_SECONDS = 59;
+	private static final int MIN_TIME = 0;
+	
 	public class tripDetails {
 		private int trip_id;
 		private int[] arrival_time;
@@ -21,15 +32,15 @@ public class ArrivalTimeSearch
 		private double shape_dist_traveled;
 
 		tripDetails() {
-			trip_id = -1;
-			arrival_time = null;
-			departure_time = null;
-			stop_id = -1;
-			stop_sequence = -1;
-			stop_headsign = null;
-			pickup_type = -1;
-			drop_off_type = -1;
-			shape_dist_traveled = -1;
+			trip_id = INVALID_INT;
+			arrival_time = INVALID_INT_ARRAY;
+			departure_time = INVALID_INT_ARRAY;
+			stop_id = INVALID_INT;
+			stop_sequence = INVALID_INT;
+			stop_headsign = INVALID_STRING;
+			pickup_type = INVALID_INT;
+			drop_off_type = INVALID_INT;
+			shape_dist_traveled = INVALID_INT;
 		}
 	}
 	
@@ -39,7 +50,8 @@ public class ArrivalTimeSearch
 			System.out.println("Invalid File");
 		}
 		System.out.println("Valid Lines " + trips.size());
-		System.out.println("Example Output");
+		
+		System.out.println("Sample Outputs");
 		tripDetailsToString(trips.get(1));
 		tripDetailsToString(trips.get(1000));
 		tripDetailsToString(trips.get(trips.size() - 1));
@@ -63,9 +75,9 @@ public class ArrivalTimeSearch
 					int arrivalTimeHours = Integer.parseInt(arrivalTime[0]);
 					int arrivalTimeMinutes = Integer.parseInt(arrivalTime[1]);
 					int arrivalTimeSeconds = Integer.parseInt(arrivalTime[2]);
-					if ((arrivalTimeHours >= 0 && arrivalTimeHours <= 23) &&
-						(arrivalTimeMinutes >= 0 && arrivalTimeMinutes <= 59) &&
-						(arrivalTimeSeconds >= 0 && arrivalTimeSeconds <= 59)) {
+					if ((arrivalTimeHours >= MIN_TIME && arrivalTimeHours <= MAX_HOURS) &&
+						(arrivalTimeMinutes >= MIN_TIME && arrivalTimeMinutes <= MAX_MINUTES) &&
+						(arrivalTimeSeconds >= MIN_TIME && arrivalTimeSeconds <= MAX_SECONDS)) {
 						currentTripDetails.arrival_time = new int[]{arrivalTimeHours, arrivalTimeMinutes, arrivalTimeSeconds};
 					}
 					else validTimes = false;
@@ -75,9 +87,9 @@ public class ArrivalTimeSearch
 					int departureTimeHours = Integer.parseInt(departureTime[0]);
 					int departureTimeMinutes = Integer.parseInt(departureTime[1]);
 					int departureTimeSeconds = Integer.parseInt(departureTime[2]);
-					if ((departureTimeHours >= 0 && departureTimeHours <= 23) &&
-						(departureTimeMinutes >= 0 && departureTimeMinutes <= 59) &&
-						(departureTimeSeconds >= 0 && departureTimeSeconds <= 59)) {
+					if ((departureTimeHours >= MIN_TIME && departureTimeHours <= MAX_HOURS) &&
+						(departureTimeMinutes >= MIN_TIME && departureTimeMinutes <= MAX_MINUTES) &&
+						(departureTimeSeconds >= MIN_TIME && departureTimeSeconds <= MAX_SECONDS)) {
 						currentTripDetails.departure_time = new int[]{departureTimeHours, departureTimeMinutes, departureTimeSeconds};
 					}
 					else validTimes = false;

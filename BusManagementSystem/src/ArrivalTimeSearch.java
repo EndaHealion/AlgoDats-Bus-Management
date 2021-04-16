@@ -1,24 +1,22 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
-public class ArrivalTimeSearch
-{
-	private static ArrayList<tripDetails> trips = null;
-	private static boolean validFile = true;
+public class ArrivalTimeSearch {
 	
 	//Invalid constants
 	private static final int INVALID_INT = -1;
 	private static final String INVALID_STRING = null;
 	private static final int[] INVALID_INT_ARRAY = null;
+	private static final ArrayList<tripDetails> INVALID_TRIPS = null;
 	
 	//Time constants
 	private static final int MAX_HOURS = 23;
 	private static final int MAX_MINUTES = 59;
 	private static final int MAX_SECONDS = 59;
 	private static final int MIN_TIME = 0;
+	
+	private static ArrayList<tripDetails> trips = INVALID_TRIPS;
+	private static boolean validFile = true;
 	
 	public class tripDetails {
 		private int trip_id;
@@ -49,12 +47,9 @@ public class ArrivalTimeSearch
 		if (!validFile) {
 			System.out.println("Invalid File");
 		}
-		System.out.println("Valid Lines " + trips.size());
-		
-		System.out.println("Sample Outputs");
-		tripDetailsToString(trips.get(1));
-		tripDetailsToString(trips.get(1000));
-		tripDetailsToString(trips.get(trips.size() - 1));
+		else {
+			sortsTripsByArrivalTimeAndTripID();
+		}
 	}
 	
 	private ArrayList<tripDetails> extractStopTimesFromFile(String fileLocation) {
@@ -118,20 +113,54 @@ public class ArrivalTimeSearch
 		else {
 			validFile = false;
 		}
-		return null;
+		return INVALID_TRIPS;
 	}
 	
-	private static void tripDetailsToString(tripDetails details) {
-		String output = "";
-		output += details.trip_id + ",";
-		output += details.arrival_time[0] + ":" + details.arrival_time[1] + ":" + details.arrival_time[2] + ",";
-		output += details.departure_time[0] + ":" + details.departure_time[1] + ":" + details.departure_time[2] + ",";
-		output += details.stop_id + ",";
-		output += details.stop_sequence + ",";
-		output += details.stop_headsign + ",";
-		output += details.pickup_type + ",";
-		output += details.drop_off_type + ",";
-		output += details.shape_dist_traveled;
-		System.out.println(output);
+	private static void sortsTripsByArrivalTimeAndTripID() {
+		
+	}
+	
+	public static ArrayList<tripDetails> findTripsAtArrivalTime(int[] arrivalTime) {
+		System.out.println("Valid Lines " + trips.size());
+		
+		return trips;	
+		//return INVALID_TRIPS;
+	}
+	
+	//Gets
+	public static int getTripID(tripDetails details) {
+		return details.trip_id;
+	}
+	
+	public static String getTripArrivalTime(tripDetails details) {
+		return details.arrival_time[0] + ":" + details.arrival_time[1] + ":" + details.arrival_time[2];
+	}
+	
+	public static String getTripDepartureTime(tripDetails details) {
+		return details.departure_time[0] + ":" + details.departure_time[1] + ":" + details.departure_time[2];
+	}
+	
+	public static int getStopID(tripDetails details) {
+		return details.stop_id;
+	}
+	
+	public static int getStopSequence(tripDetails details) {
+		return details.stop_sequence;
+	}
+	
+	public static String getStopHeadsign(tripDetails details) {
+		return details.stop_headsign;
+	}
+	
+	public static int getPickupType(tripDetails details) {
+		return details.pickup_type;
+	}
+	
+	public static int getDropOffType(tripDetails details) {
+		return details.drop_off_type;
+	}
+	
+	public static double getShapeDistTravelled(tripDetails details) {
+		return details.shape_dist_traveled;
 	}
 }

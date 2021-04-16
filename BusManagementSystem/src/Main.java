@@ -23,5 +23,23 @@ public class Main {
 	
 	private static void arrivalTimeSearchTest() {
 		new ArrivalTimeSearch("inputs/stop_times.txt");
+		int[] arrivalTime = new int[]{5, 25, 0};
+		ArrayList<ArrivalTimeSearch.tripDetails> tripsAtArrivalTime = ArrivalTimeSearch.findTripsAtArrivalTime(arrivalTime);
+		
+		System.out.println("Sample Outputs");
+		for (int i = 0; i <= 20; i++) {
+			ArrivalTimeSearch.tripDetails details = tripsAtArrivalTime.get(i);
+			String output = i + ": ";
+			output += ArrivalTimeSearch.getTripID(details) + ",";
+			output += ArrivalTimeSearch.getTripArrivalTime(details) + ",";
+			output += ArrivalTimeSearch.getTripDepartureTime(details) + ",";
+			output += ArrivalTimeSearch.getStopID(details) + ",";
+			output += ArrivalTimeSearch.getStopSequence(details) + ",";
+			output += ArrivalTimeSearch.getStopHeadsign(details) + ",";
+			output += ArrivalTimeSearch.getPickupType(details) + ",";
+			output += ArrivalTimeSearch.getDropOffType(details) + ",";
+			output += ArrivalTimeSearch.getShapeDistTravelled(details);
+			System.out.println(output);
+		}
 	}
 }

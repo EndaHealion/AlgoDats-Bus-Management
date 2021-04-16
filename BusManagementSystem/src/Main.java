@@ -1,12 +1,14 @@
-
 import java.util.ArrayList;
 
 public class Main {
 	
 	public static void main(String[] args) {
-		System.out.println("Hi :)");
-
 		// Basic tests for search. @TEMP: Maybe replace with JUnit tests later...
+		//busStopSearchTest();
+		arrivalTimeSearchTest();	
+	}
+	
+	private static void busStopSearchTest() {
 		new BusStopSearch("inputs/stops.txt");
 		String stringToFind = "WESTMINSTER HWY AT 11000 BLOCK WB";
 		String prefixSearchWord = "WESTM";
@@ -17,5 +19,9 @@ public class Main {
 		}
 		boolean wasFound = BusStopSearch.isInDataBase(stringToFind);
 		System.out.println("Was \"" + stringToFind + "\" found in the tree: " + wasFound);
+	}
+	
+	private static void arrivalTimeSearchTest() {
+		new ArrivalTimeSearch("inputs/stop_times.txt");
 	}
 }

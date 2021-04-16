@@ -1,5 +1,6 @@
 import java.io.*;
-import java.util.ArrayList;
+//import java.util.ArrayList;
+import java.util.*;
 
 public class ArrivalTimeSearch {
 	
@@ -14,6 +15,9 @@ public class ArrivalTimeSearch {
 	private static final int MAX_MINUTES = 59;
 	private static final int MAX_SECONDS = 59;
 	private static final int MIN_TIME = 0;
+	private static final int INDEX_HOURS = 0;
+	private static final int INDEX_MINUTES = 1;
+	private static final int INDEX_SECONDS = 2;
 	
 	private static ArrayList<tripDetails> trips = INVALID_TRIPS;
 	private static boolean validFile = true;
@@ -67,9 +71,9 @@ public class ArrivalTimeSearch {
 					
 					//Extract Arrival Time
 					String[] arrivalTime = currentTrip[1].split(":");
-					int arrivalTimeHours = Integer.parseInt(arrivalTime[0]);
-					int arrivalTimeMinutes = Integer.parseInt(arrivalTime[1]);
-					int arrivalTimeSeconds = Integer.parseInt(arrivalTime[2]);
+					int arrivalTimeHours = Integer.parseInt(arrivalTime[INDEX_HOURS]);
+					int arrivalTimeMinutes = Integer.parseInt(arrivalTime[INDEX_MINUTES]);
+					int arrivalTimeSeconds = Integer.parseInt(arrivalTime[INDEX_SECONDS]);
 					if ((arrivalTimeHours >= MIN_TIME && arrivalTimeHours <= MAX_HOURS) &&
 						(arrivalTimeMinutes >= MIN_TIME && arrivalTimeMinutes <= MAX_MINUTES) &&
 						(arrivalTimeSeconds >= MIN_TIME && arrivalTimeSeconds <= MAX_SECONDS)) {
@@ -79,9 +83,9 @@ public class ArrivalTimeSearch {
 					
 					//Extract Departure Time
 					String[] departureTime = currentTrip[2].split(":");
-					int departureTimeHours = Integer.parseInt(departureTime[0]);
-					int departureTimeMinutes = Integer.parseInt(departureTime[1]);
-					int departureTimeSeconds = Integer.parseInt(departureTime[2]);
+					int departureTimeHours = Integer.parseInt(departureTime[INDEX_HOURS]);
+					int departureTimeMinutes = Integer.parseInt(departureTime[INDEX_MINUTES]);
+					int departureTimeSeconds = Integer.parseInt(departureTime[INDEX_SECONDS]);
 					if ((departureTimeHours >= MIN_TIME && departureTimeHours <= MAX_HOURS) &&
 						(departureTimeMinutes >= MIN_TIME && departureTimeMinutes <= MAX_MINUTES) &&
 						(departureTimeSeconds >= MIN_TIME && departureTimeSeconds <= MAX_SECONDS)) {
@@ -115,16 +119,35 @@ public class ArrivalTimeSearch {
 		}
 		return INVALID_TRIPS;
 	}
-	
+
 	private static void sortsTripsByArrivalTimeAndTripID() {
-		
+		Collections.sort(trips, new TripsComparator());
+	}
+	
+	public static class TripsComparator implements Comparator<tripDetails> {
+	    public int compare(tripDetails trip1, tripDetails trip2) {
+	    	//Sort by time
+	    	int trip1TimeInSeconds = (trip1.arrival_time[INDEX_HOURS] * 3600) + (trip1.arrival_time[INDEX_MINUTES] * 60) + trip1.arrival_time[INDEX_SECONDS];
+	    	int trip2TimeInSeconds = (trip2.arrival_time[INDEX_HOURS] * 3600) + (trip2.arrival_time[INDEX_MINUTES] * 60) + trip2.arrival_time[INDEX_SECONDS];
+	        int compareValue = trip1TimeInSeconds - trip2TimeInSeconds;
+	        //Sort by trip_id
+	        if (compareValue == 0) {
+	            return trip1.trip_id - trip2.trip_id;
+	        }
+	        return compareValue;
+	    }
 	}
 	
 	public static ArrayList<tripDetails> findTripsAtArrivalTime(int[] arrivalTime) {
-		System.out.println("Valid Lines " + trips.size());
-		
-		return trips;	
-		//return INVALID_TRIPS;
+		ArrayList<tripDetails> tripsAtSpecifiedTime = new ArrayList<tripDetails>();
+		for (tripDetails details : trips) {
+			if (details.arrival_time[INDEX_HOURS] == arrivalTime[INDEX_HOURS] &&
+				details.arrival_time[INDEX_MINUTES] == arrivalTime[INDEX_MINUTES] &&
+				details.arrival_time[INDEX_SECONDS] == arrivalTime[INDEX_SECONDS]) {
+					tripsAtSpecifiedTime.add(details);
+			}
+		}
+		return tripsAtSpecifiedTime;
 	}
 	
 	//Gets
@@ -133,11 +156,13 @@ public class ArrivalTimeSearch {
 	}
 	
 	public static String getTripArrivalTime(tripDetails details) {
-		return details.arrival_time[0] + ":" + details.arrival_time[1] + ":" + details.arrival_time[2];
+		return String.format("%02d", details.arrival_time[INDEX_HOURS]) + ":" + String.format("%02d", details.arrival_time[INDEX_MINUTES]) + ":" 
+				+ String.format("%02d", details.arrival_time[INDEX_SECONDS]);
 	}
 	
 	public static String getTripDepartureTime(tripDetails details) {
-		return details.departure_time[0] + ":" + details.departure_time[1] + ":" + details.departure_time[2];
+		return String.format("%02d", details.departure_time[INDEX_HOURS]) + ":" + String.format("%02d", details.departure_time[INDEX_MINUTES]) + ":" 
+				+ String.format("%02d", details.departure_time[INDEX_SECONDS]);
 	}
 	
 	public static int getStopID(tripDetails details) {

@@ -23,11 +23,13 @@ public class Main {
 	
 	private static void arrivalTimeSearchTest() {
 		new ArrivalTimeSearch("inputs/stop_times.txt");
+		
+		//Enter time HH, MM, SS
 		int[] arrivalTime = new int[]{5, 25, 0};
 		ArrayList<ArrivalTimeSearch.tripDetails> tripsAtArrivalTime = ArrivalTimeSearch.findTripsAtArrivalTime(arrivalTime);
 		
 		System.out.println("Sample Outputs");
-		for (int i = 0; i <= 20; i++) {
+		for (int i = 0; i <= tripsAtArrivalTime.size() - 1; i++) {
 			ArrivalTimeSearch.tripDetails details = tripsAtArrivalTime.get(i);
 			String output = i + ": ";
 			output += ArrivalTimeSearch.getTripID(details) + ",";

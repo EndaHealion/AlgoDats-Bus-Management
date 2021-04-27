@@ -5,18 +5,22 @@ public class Main {
 	public static void main(String[] args) {
 		// Basic tests for search. @TEMP: Maybe replace with JUnit tests later...
 		//busStopSearchTest();
-		arrivalTimeSearchTest();	
+		arrivalTimeSearchTest();
+		busStopSearchTest();
 	}
 	
 	private static void busStopSearchTest() {
 		new BusStopSearch("inputs/stops.txt");
+		
 		String stringToFind = "WESTMINSTER HWY AT 11000 BLOCK WB";
 		String prefixSearchWord = "WESTM";
+		
 		System.out.println("List of words with prefix: \"" + prefixSearchWord + "\":");
 		ArrayList<String> finds = BusStopSearch.findStops(prefixSearchWord);
 		for (String s : finds) {
 			System.out.println(s);
 		}
+		
 		boolean wasFound = BusStopSearch.isInDataBase(stringToFind);
 		System.out.println("Was \"" + stringToFind + "\" found in the tree: " + wasFound);
 	}

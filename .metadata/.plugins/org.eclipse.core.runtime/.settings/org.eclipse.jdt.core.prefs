@@ -1,4 +1,9 @@
 eclipse.preferences.version=1
+org.eclipse.jdt.core.classpathVariable.JRE_LIB=/usr/lib/jvm/java-11-openjdk-amd64/lib/jrt-fs.jar
+org.eclipse.jdt.core.classpathVariable.JRE_SRC=
+org.eclipse.jdt.core.classpathVariable.JRE_SRCROOT=
+org.eclipse.jdt.core.classpathVariable.JUNIT_HOME=/snap/eclipse/48/plugins/org.junit_4.12.0.v201504281640/
+org.eclipse.jdt.core.classpathVariable.M2_REPO=/home/enda/.m2/repository
 org.eclipse.jdt.core.codeComplete.visibilityCheck=enabled
 org.eclipse.jdt.core.compiler.codegen.inlineJsrBytecode=enabled
 org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.8
@@ -6,4 +11,4 @@ org.eclipse.jdt.core.compiler.compliance=1.8
 org.eclipse.jdt.core.compiler.problem.assertIdentifier=error
 org.eclipse.jdt.core.compiler.problem.enumIdentifier=error
 org.eclipse.jdt.core.compiler.source=1.8
-org.eclipse.jdt.core.userLibrary.JavaFX11=<?xml version\="1.0" encoding\="UTF-8"?>\n<userlibrary systemlibrary\="true" version\="2">\n\t<archive path\="/home/enda/Libraries/javafx-sdk-11.0.2/lib/javafx.base.jar"/>\n\t<archive path\="/home/enda/Libraries/javafx-sdk-11.0.2/lib/javafx.controls.jar"/>\n\t<archive path\="/home/enda/Libraries/javafx-sdk-11.0.2/lib/javafx.fxml.jar"/>\n\t<archive path\="/home/enda/Libraries/javafx-sdk-11.0.2/lib/javafx.graphics.jar"/>\n\t<archive path\="/home/enda/Libraries/javafx-sdk-11.0.2/lib/javafx.media.jar"/>\n\t<archive path\="/home/enda/Libraries/javafx-sdk-11.0.2/lib/javafx.swing.jar"/>\n\t<archive path\="/home/enda/Libraries/javafx-sdk-11.0.2/lib/javafx.web.jar"/>\n\t<archive path\="/home/enda/Libraries/javafx-sdk-11.0.2/lib/javafx-swt.jar"/>\n</userlibrary>\n
+org.eclipse.jdt.core.userLibrary.JavaFX=<?xml version\="1.0" encoding\="UTF-8"?>\n<userlibrary systemlibrary\="true" version\="2">\n\t<archive path\="/home/enda/Libraries/java/javafx-sdk-11.0.2/lib/javafx.base.jar"/>\n\t<archive path\="/home/enda/Libraries/java/javafx-sdk-11.0.2/lib/javafx.controls.jar"/>\n\t<archive path\="/home/enda/Libraries/java/javafx-sdk-11.0.2/lib/javafx.fxml.jar"/>\n\t<archive path\="/home/enda/Libraries/java/javafx-sdk-11.0.2/lib/javafx.graphics.jar"/>\n\t<archive path\="/home/enda/Libraries/java/javafx-sdk-11.0.2/lib/javafx.media.jar"/>\n\t<archive path\="/home/enda/Libraries/java/javafx-sdk-11.0.2/lib/javafx.swing.jar"/>\n\t<archive path\="/home/enda/Libraries/java/javafx-sdk-11.0.2/lib/javafx.web.jar"/>\n\t<archive path\="/home/enda/Libraries/java/javafx-sdk-11.0.2/lib/javafx-swt.jar"/>\n</userlibrary>\n

@@ -41,11 +41,73 @@ public class BusStopSearch {
 			// NOTE(Enda): This might be a bad idea because all buss stop locations will be
 			// in memory in two places at the same time...
 			// Maybe revert back to doing this with the getStopNamesFromFile inlined
-			ArrayList<String> stopNames = getStopNamesFromFile(fileLocation);
+			if (fileLocation == null) {
+				return;
+			}
 
-			// Insert words into tree...
-			for (String stopName : stopNames) {
-				insert(stopName.toString());
+			int currentLine = 1;
+			int failedReads = 0;
+			BufferedReader reader;
+			try {
+				reader = new BufferedReader(new FileReader(fileLocation));
+
+				// read line to get rid of column descriptors in CSV file...
+				String line = reader.readLine();
+				if (line == null) {
+					System.out.println("[BusStopSearch] WARNING: No data in file: " + fileLocation);
+					reader.close();
+				}
+
+				line = reader.readLine();
+				while (line != null) {
+					// System.out.println(line);
+
+					// Skip until "stop_name", which is in the third column...
+					int commasToSkip = 2;
+					int lineLen = line.length();
+					int currentChar = 0;
+					int commasSeen = 0;
+					for (; commasSeen < commasToSkip && currentChar < lineLen; currentChar++) {
+						if (line.charAt(currentChar) == ',') {
+							commasSeen++;
+						}
+					}
+
+					StringBuilder stopName = new StringBuilder();
+					if (commasSeen >= commasToSkip) {
+						// Gather stop name
+						while (currentChar < lineLen) {
+							if (line.charAt(currentChar) == ',') {
+								break;
+							}
+							stopName.append(Character.toUpperCase(line.charAt(currentChar)));
+							currentChar++;
+						}
+
+						// Insert stop name into tree
+						makeStopSearchable(stopName);
+						insert(stopName.toString());
+						
+					} else {
+						System.out.println("[BusStopSearch] WARNING: No stop name on line: " + currentLine);
+						failedReads++;
+					}
+
+					currentLine++;
+					line = reader.readLine();
+				}
+
+				if (failedReads > 0) {
+					System.out.println(
+							"[BusStopSearch] WARNING: Could not read " + failedReads + " stop names from file.");
+				}
+				System.out.println("");
+
+				reader.close();
+				return;
+			} catch (IOException e) {
+				System.out.println("Could not open file at location: " + fileLocation);
+				return;
 			}
 		}
 
@@ -202,75 +264,5 @@ public class BusStopSearch {
 			}
 		}
 	}
-
-	// get all stop names from file
-	private ArrayList<String> getStopNamesFromFile(String fileLocation) {
-		if (fileLocation == null) {
-			return null;
-		}
-
-		ArrayList<String> stopNames = new ArrayList<String>();
-		int currentLine = 1;
-		int failedReads = 0;
-		BufferedReader reader;
-		try {
-			reader = new BufferedReader(new FileReader(fileLocation));
-
-			// read line to get rid of column descriptors in CSV file...
-			String line = reader.readLine();
-			if (line == null) {
-				System.out.println("[BusStopSearch] WARNING: No data in file: " + fileLocation);
-				reader.close();
-				return null;
-			}
-
-			line = reader.readLine();
-			while (line != null) {
-				// System.out.println(line);
-
-				// Skip until "stop_name", which is in the third column...
-				int commasToSkip = 2;
-				int lineLen = line.length();
-				int currentChar = 0;
-				int commasSeen = 0;
-				for (; commasSeen < commasToSkip && currentChar < lineLen; currentChar++) {
-					if (line.charAt(currentChar) == ',') {
-						commasSeen++;
-					}
-				}
-
-				StringBuilder stopName = new StringBuilder();
-				if (commasSeen >= commasToSkip) {
-					// Gather stop name
-					while (currentChar < lineLen) {
-						if (line.charAt(currentChar) == ',') {
-							break;
-						}
-						stopName.append(Character.toUpperCase(line.charAt(currentChar)));
-						currentChar++;
-					}
-
-					makeStopSearchable(stopName);
-					stopNames.add(stopName.toString());
-				} else {
-					System.out.println("[BusStopSearch] WARNING: No stop name on line: " + currentLine);
-					failedReads++;
-				}
-
-				currentLine++;
-				line = reader.readLine();
-			}
-
-			if (failedReads > 0) {
-				System.out.println("[BusStopSearch] WARNING: Could not read " + failedReads + " stop names from file.");
-			}
-			System.out.println("");
-
-			reader.close();
-			return stopNames;
-		} catch (IOException e) {
-			System.out.println("Could not open file at location: " + fileLocation);
-			return null;
-		}
-	}
+	
 }

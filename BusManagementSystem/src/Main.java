@@ -1,28 +1,33 @@
 import java.util.ArrayList;
 
+
 public class Main {
 	
 	public static void main(String[] args) {
 		// Basic tests for search. @TEMP: Maybe replace with JUnit tests later...
 		//busStopSearchTest();
-		arrivalTimeSearchTest();
+		//arrivalTimeSearchTest();
 		busStopSearchTest();
+		
+		// NOTE(Enda): new Stops(fileLocation) must be called before new BusStopSearch(Stops)
 	}
 	
 	private static void busStopSearchTest() {
-		new BusStopSearch("inputs/stops.txt");
+		new Stops("inputs/stops.txt");
+		new BusStopSearch(Stops.stops);
 		
 		String stringToFind = "WESTMINSTER HWY AT 11000 BLOCK WB";
-		String prefixSearchWord = "WESTM";
+		String prefixSearchWord = "WESTMI";
 		
-		System.out.println("List of words with prefix: \"" + prefixSearchWord + "\":");
-		ArrayList<String> finds = BusStopSearch.findStops(prefixSearchWord);
-		for (String s : finds) {
-			System.out.println(s);
+		System.out.println("List of stops with prefix: \"" + prefixSearchWord + "\":");
+		ArrayList<Stops.Stop> finds = BusStopSearch.findStops(prefixSearchWord);
+		int numFinds = finds.size();
+		for (int i=0; i<numFinds; i++) {
+			System.out.println(finds.get(i).toString());
 		}
 		
 		boolean wasFound = BusStopSearch.isInDataBase(stringToFind);
-		System.out.println("Was \"" + stringToFind + "\" found in the tree: " + wasFound);
+		System.out.println("is \"" + stringToFind + "\" in the tree: " + wasFound);
 	}
 	
 	private static void arrivalTimeSearchTest() {

@@ -1,12 +1,10 @@
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class BusStopSearch {
 	private static TernarySearchTree searchTree = null;
-
+	public static boolean isValid = false;
+	
 	public class TSTNode {
 		public char value;
 		public TSTNode left, middle, right;
@@ -32,82 +30,20 @@ public class BusStopSearch {
 	public class TernarySearchTree {
 		public TSTNode root = null;
 
-		// generates tree from input file... @TEMP: put the code that gets the stop
-		// names in a function
-		// with error handling
-		TernarySearchTree(String fileLocation) {
+		// generates tree from input file
+		TernarySearchTree(ArrayList<Stops.Stop> stops) {
 			root = new TSTNode();
 
-			// NOTE(Enda): This might be a bad idea because all buss stop locations will be
-			// in memory in two places at the same time...
-			// Maybe revert back to doing this with the getStopNamesFromFile inlined
-			if (fileLocation == null) {
+			if (stops == null) {
 				return;
 			}
-
-			int currentLine = 1;
-			int failedReads = 0;
-			BufferedReader reader;
-			try {
-				reader = new BufferedReader(new FileReader(fileLocation));
-
-				// read line to get rid of column descriptors in CSV file...
-				String line = reader.readLine();
-				if (line == null) {
-					System.out.println("[BusStopSearch] WARNING: No data in file: " + fileLocation);
-					reader.close();
+			
+			int numStops = stops.size();
+			for (int i=0; i<numStops; i++) {
+				String currentStop = stops.get(i).stopName;
+				if (currentStop!= null && !(currentStop.contentEquals(""))) {
+					insert(currentStop);					
 				}
-
-				line = reader.readLine();
-				while (line != null) {
-					// System.out.println(line);
-
-					// Skip until "stop_name", which is in the third column...
-					int commasToSkip = 2;
-					int lineLen = line.length();
-					int currentChar = 0;
-					int commasSeen = 0;
-					for (; commasSeen < commasToSkip && currentChar < lineLen; currentChar++) {
-						if (line.charAt(currentChar) == ',') {
-							commasSeen++;
-						}
-					}
-
-					StringBuilder stopName = new StringBuilder();
-					if (commasSeen >= commasToSkip) {
-						// Gather stop name
-						while (currentChar < lineLen) {
-							if (line.charAt(currentChar) == ',') {
-								break;
-							}
-							stopName.append(Character.toUpperCase(line.charAt(currentChar)));
-							currentChar++;
-						}
-
-						// Insert stop name into tree
-						makeStopSearchable(stopName);
-						insert(stopName.toString());
-						
-					} else {
-						System.out.println("[BusStopSearch] WARNING: No stop name on line: " + currentLine);
-						failedReads++;
-					}
-
-					currentLine++;
-					line = reader.readLine();
-				}
-
-				if (failedReads > 0) {
-					System.out.println(
-							"[BusStopSearch] WARNING: Could not read " + failedReads + " stop names from file.");
-				}
-				System.out.println("");
-
-				reader.close();
-				return;
-			} catch (IOException e) {
-				System.out.println("Could not open file at location: " + fileLocation);
-				return;
 			}
 		}
 
@@ -203,8 +139,9 @@ public class BusStopSearch {
 
 	}
 
-	BusStopSearch(String fileLocation) {
-		searchTree = new TernarySearchTree(fileLocation);
+	BusStopSearch(ArrayList<Stops.Stop> stops) {
+		searchTree = new TernarySearchTree(stops);
+		isValid = true;
 	}
 
 	// returns if the stop name is in the tree. Full character match.
@@ -217,16 +154,16 @@ public class BusStopSearch {
 	}
 
 	// returns all stop names that contains the prefix provided.
-	public static ArrayList<String> findStops(String prefix) {
+	public static ArrayList<Stops.Stop> findStops(String prefix) {
 		ArrayList<String> matches = new ArrayList<String>();
 		if (prefix == null || prefix.length() == 0 || searchTree == null || searchTree.root == null) {
-			return matches;
+			return new ArrayList<Stops.Stop>();
 		}
 
 		// find prefix root node
 		TSTNode prefixNode = searchTree.getPrefixNode(searchTree.root, prefix, 0);
 		if (prefixNode == null) {
-			return matches;
+			return new ArrayList<Stops.Stop>();
 		}
 		if (prefixNode.isEnd) {
 			matches.add(prefix);
@@ -235,34 +172,15 @@ public class BusStopSearch {
 		// get all words starting from the prefix root node
 		searchTree.getWordsWithPrefix(prefixNode.middle, new StringBuilder(prefix), matches);
 
-		return matches;
+		int numMatches = matches.size();
+		ArrayList<Stops.Stop> stops = new ArrayList<Stops.Stop>(numMatches);
+		for (int i=0; i<numMatches; i++) {
+			// Gets the stop from the stop name...
+			stops.add(i, Stops.stops.get(Stops.stopNameIndexMap.get(matches.get(i))));
+		}
+		
+		return stops;
 	}
 
-	// Manipulate the stop name to make it more search able...
-	// Move wb,nb,sb,eb from the start to the end
-	private void makeStopSearchable(StringBuilder stopName) {
-		if (stopName == null) {
-			return;
-		}
 
-		int numPrefixChars = 3;
-		if (stopName.length() > numPrefixChars) {
-			if (stopName.charAt(1) == 'B' && stopName.charAt(2) == ' ') {
-				switch (stopName.charAt(0)) {
-				case 'W':
-				case 'N':
-				case 'S':
-				case 'E':
-					stopName.delete(0, 3);
-					stopName.append(' ');
-					stopName.append(stopName.charAt(0));
-					stopName.append('B');
-					break;
-
-				default:
-				}
-			}
-		}
-	}
-	
 }

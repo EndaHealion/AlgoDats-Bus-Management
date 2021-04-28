@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="makeStopSearchable"/>
+		<item key="selection" value="Stops("/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="Stops("/>
+			<item value="System"/>
+			<item value="System.out"/>
+			<item value="Test"/>
+			<item value="new stop"/>
+			<item value="searchAble"/>
+			<item value="search"/>
+			<item value="BusStopSearch"/>
+			<item value="No info"/>
+			<item value="\\s"/>
+			<item value="tripDetails"/>
+			<item value="while"/>
 			<item value="makeStopSearchable"/>
 			<item value="more search"/>
 			<item value="getStopNames"/>
-			<item value="Application"/>
-			<item value="x"/>
-			<item value="key"/>
-			<item value="get("/>
-			<item value="get"/>
-			<item value="Queue"/>
-			<item value="ptr"/>
-			<item value="r"/>
-			<item value="value"/>
-			<item value="TrieNode("/>
-			<item value=".add"/>
-			<item value="insert"/>
 		</list>
 		<list key="replacehistory">
 			<item value="root"/>

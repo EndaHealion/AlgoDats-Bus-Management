@@ -8,6 +8,7 @@ import java.util.HashMap;
 public class Stops {
 	public static ArrayList<Stop> stops;
 	public static HashMap<String, Integer> stopNameIndexMap;
+	public static HashMap<Integer, Stop> stopIdIndex;
 	public static boolean isValid = false;
 
 	public class Stop {
@@ -115,6 +116,7 @@ public class Stops {
 	Stops(String fileLocation) {
 		stops = new ArrayList<Stop>();
 		stopNameIndexMap = new HashMap<String, Integer>();
+		stopIdIndex = new HashMap<Integer, Stop>();
 		if (fileLocation == null) {
 			return;
 		}
@@ -141,6 +143,9 @@ public class Stops {
 					Stop s = new Stop(csvData);
 					stops.add(s);
 					stopNameIndexMap.put(s.stopName, currentStop);
+					
+					// create index between stop id and the stop object
+					stopIdIndex.put(s.stopId, s);
 					
 					currentStop++;
 					line = reader.readLine();
@@ -187,6 +192,7 @@ public class Stops {
 	}
 	
 	public static Stops.Stop findStopById(int stopId) {
+		/*
 		for (Stops.Stop s : stops) {
 			if (s.stopId == stopId){
 				return s;
@@ -194,5 +200,7 @@ public class Stops {
 		}
 		// didn't find anything
 		return null;
+		*/
+		return stopIdIndex.get(stopId);
 	}
 }

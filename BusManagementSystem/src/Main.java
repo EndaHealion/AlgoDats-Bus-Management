@@ -6,13 +6,11 @@ public class Main {
 	
 	public static void main(String[] args) {
 		// Basic tests for search. @TEMP: Maybe replace with JUnit tests later...
-		//busStopSearchTest();
-		//arrivalTimeSearchTest();
-		// busStopSearchTest();
+		busStopSearchTest();
+		arrivalTimeSearchTest();
+		busStopsShortestPathTest();
 		
 		// NOTE(Enda): new Stops(fileLocation) must be called before new BusStopSearch(Stops)
-		
-		busStopsShortestPathTest();
 	}
 	
 	private static void busStopSearchTest() {
@@ -60,16 +58,24 @@ public class Main {
 	private static void busStopsShortestPathTest() {
 		new Stops("inputs/stops.txt");
 		try {
-			BusStopsShortestPath.buildGraph();
+			BusStopsShortestPath.buildGraph("inputs/stop_times.txt", "inputs/transfers.txt");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
+			System.err.println("Could not find files specified. Exiting");
 			return;
 		}
-		Stops.Stop source = Stops.findStopById("381");
-		Stops.Stop destination = Stops.findStopById("10542");
+		Stops.Stop source = Stops.findStopById("1270");
+		Stops.Stop destination = Stops.findStopById("5474");
 		
 		Edge[] path = BusStopsShortestPath.shortestPath(source, destination);
+		// if the path is of length 0, there isn't a solution
+		
+		for (Edge e : path) {
+			System.out.print(e.currentStop.stopId + "->");
+		}
+		System.out.print(path[path.length - 1].nextStop.stopId);	
+		System.out.println(); // lazy newline
+		
+		System.out.println("Cost of journey: " + BusStopsShortestPath.sumCost(path));
 		
 	}
 }

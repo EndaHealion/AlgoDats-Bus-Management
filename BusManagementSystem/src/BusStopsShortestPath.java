@@ -1,9 +1,7 @@
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 public class BusStopsShortestPath {
@@ -26,45 +24,71 @@ public class BusStopsShortestPath {
 	public static final int T_MIN_TRANSFER_TIME_INDEX 	= 3;
 	
 	
-	public static ArrayList<Stops.Stop> q = new ArrayList<Stops.Stop>();
+	public static ArrayList<Stops.Stop> q = Stops.stops;
 
-	public static void buildGraph() throws IOException {
-		// TODO: add additional copies of a stop for each trip that visits it.
-		// https://www.javaer101.com/en/article/100599942.html
+	public static void buildGraph(String stopTimesLocation, String transfersLocation) throws IOException {
+		// add additional copies of a stop for each trip that visits it.
+		// for an explanation, see: https://www.javaer101.com/en/article/100599942.html
 
-		BufferedReader stopTimes = new BufferedReader(new FileReader("inputs/stop_times.txt"));
+		BufferedReader stopTimes = new BufferedReader(new FileReader(stopTimesLocation));
 		stopTimes.readLine(); // move past headers
 		
-		
-		// assuming there is at least one journey with two stops
-		int tripId;
-		int prevTripId = -1;
-		Stops.Stop prevStop = null;
-		Stops.Stop currentStop = null;
 		String line = stopTimes.readLine();
-		do {
+		String[] splitLine = line.split(",");
+
+		
+		String currentStopId = splitLine[ST_STOP_ID_INDEX];
+		
+		Stops.Stop prevStop = null;
+		Stops.Stop currentStop = Stops.findStopById(currentStopId);
+		int prevTripId = -1;
+		int currentTripId = Integer.parseInt(splitLine[ST_TRIP_ID_INDEX]);
+		
+		double cost = 1.0; // staying on the same bus, so the 'cost' is always 1
+		
+		
+		while ((line = stopTimes.readLine()) != null) {
+			prevStop = currentStop;
+			prevTripId = currentTripId;
 			
-			String[] splitLine = line.split(",");
-			tripId = Integer.parseInt(splitLine[ST_TRIP_ID_INDEX]);
-			double cost = 1;
+			splitLine = line.split(",");
 			
-			String currentStopId = splitLine[ST_STOP_ID_INDEX];
-			currentStop = Stops.findStopById(currentStopId).clone();
+			currentTripId = Integer.parseInt(splitLine[ST_TRIP_ID_INDEX]);
+			currentStopId = splitLine[ST_STOP_ID_INDEX];
+			currentStop = Stops.findStopById(currentStopId);
 			
 			// if we're staying on the same bus to the next stop, create an edge between them
-			if (prevTripId == tripId) {
-				Edge edge = new Edge(tripId, prevStop, currentStop, cost);
+			if (prevTripId == currentTripId) {
+				Edge edge = new Edge(currentTripId, prevStop, currentStop, cost);
 				prevStop.edges.add(edge);
 			}
-			
-			q.add(currentStop);
-			
-			prevStop = currentStop;
-			prevTripId = tripId;
-			line = stopTimes.readLine();
-		} while (line != null);
+		}
+		stopTimes.close();
 		
-		// TODO: for every line in the transfers file, find the two stop objects, then create an edge between them
+		
+		// for every line in the transfers file, find the two stop objects, then create an edge between them
+		BufferedReader transfers = new BufferedReader(new FileReader(transfersLocation));
+		transfers.readLine(); // move past headers
+		
+		while ((line = transfers.readLine()) != null) { 
+			splitLine = line.split(",");
+			int fromId = Integer.parseInt(splitLine[T_FROM_STOP_ID_INDEX]);
+			int toId = Integer.parseInt(splitLine[T_TO_STOP_ID_INDEX]);
+			int transferType = Integer.parseInt(splitLine[T_TRANSFER_TYPE_INDEX]);
+			
+			Stops.Stop from = Stops.findStopById(fromId);
+			Stops.Stop to = Stops.findStopById(toId);
+			
+			if (transferType == 0) {
+				cost = 2.0;
+			} else if (transferType == 2) {
+				cost = Double.parseDouble(splitLine[T_MIN_TRANSFER_TIME_INDEX]) / 100;
+			}
+			
+			from.edges.add(new Edge(0, from, to, cost));
+		}
+		
+		transfers.close();
 	}
 
 	// returns the path of the shortest route between two stops
@@ -73,25 +97,34 @@ public class BusStopsShortestPath {
 		
 		HashMap<Stops.Stop, Double> dist = new HashMap<Stops.Stop, Double>();
 		HashMap<Stops.Stop, Edge> prev = new HashMap<Stops.Stop, Edge>();
+		HashMap<Stops.Stop, Boolean> visited = new HashMap<Stops.Stop, Boolean>();
 		
-		for (Stops.Stop v : Stops.stops) {
-			dist.put(v, Double.POSITIVE_INFINITY);
+		for (Stops.Stop v : q) {
 			prev.put(v, null);
+			if (v.stopId != source.stopId) {
+				dist.put(v, Double.POSITIVE_INFINITY);
+			} else {
+				dist.put(v, 0.0);
+			}
 		}
-		dist.put(source, 0.0);
 		
-		while (q.size() != 0) {
+		
+		while (q.size() - visited.size() != 0) {
+			System.out.println("" + (q.size() - visited.size()) + " vertices left to check");
 			// find the vertex with the minimum cost in dist
-			Stops.Stop u = q.get(0);
+			Stops.Stop u = null;
+			double minDist = Double.POSITIVE_INFINITY;
 			for (Stops.Stop s : q) {
-				if (dist.get(s) < dist.get(u)) {
+				if (!visited.containsKey(s) && dist.get(s) <= minDist) {
 					u = s;
+					minDist = dist.get(s);
 				}
 			}
-			q.remove(u);
-			System.out.println("got here!");
+			
+			visited.put(u, true);
+			
 			for (Edge e : u.edges) {
-				if (q.contains(e.currentStop)) {
+				if (!visited.containsKey(e.nextStop)) {
 					Stops.Stop v = e.nextStop;
 					double alt = dist.get(u) + e.cost;
 					if (alt < dist.get(v)) {
@@ -103,19 +136,20 @@ public class BusStopsShortestPath {
 		}
 		
 		// walk through the shortest path from destination to source to build up the solution as a list
-		ArrayList<Edge> path = new ArrayList<Edge>();
 		Edge e = prev.get(destination);
-		while (e != null) { // (!e.currentStop.equals(source)) {
-			System.out.println(e);
-			System.out.println(e.currentStop);
+		
+		ArrayList<Edge> path = new ArrayList<Edge>();
+		while (e != null) {
 			path.add(e);
 			e = prev.get(e.currentStop);
 		}
-		path.add(e); // add the first edge (ie. the one connected to the source)
 		
 		// the solution list is now in reverse order, so reverse it before returning as an array
-		Collections.sort(path, Collections.reverseOrder());
-		return path.toArray(new Edge[path.size()]);
+		Edge[] result = new Edge[path.size()];
+		for (int i = path.size() - 1; i >= 0; i--) {
+			result[path.size() - i - 1] = path.get(i);
+		}
+		return result;
 	}
 
 	public static double sumCost(Edge[] path) {

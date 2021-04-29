@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -7,9 +8,11 @@ public class Main {
 		// Basic tests for search. @TEMP: Maybe replace with JUnit tests later...
 		//busStopSearchTest();
 		//arrivalTimeSearchTest();
-		busStopSearchTest();
+		// busStopSearchTest();
 		
 		// NOTE(Enda): new Stops(fileLocation) must be called before new BusStopSearch(Stops)
+		
+		busStopsShortestPathTest();
 	}
 	
 	private static void busStopSearchTest() {
@@ -52,5 +55,21 @@ public class Main {
 			output += ArrivalTimeSearch.getShapeDistTravelled(details);
 			System.out.println(output);
 		}
+	}
+	
+	private static void busStopsShortestPathTest() {
+		new Stops("inputs/stops.txt");
+		try {
+			BusStopsShortestPath.buildGraph();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			// e.printStackTrace();
+			return;
+		}
+		Stops.Stop source = Stops.findStopById("381");
+		Stops.Stop destination = Stops.findStopById("10542");
+		
+		Edge[] path = BusStopsShortestPath.shortestPath(source, destination);
+		
 	}
 }

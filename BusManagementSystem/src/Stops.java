@@ -21,6 +21,8 @@ public class Stops {
 		public String stopUrl = "";
 		public int locationType = 0;
 		public int parentStation = 0;
+		
+		public ArrayList<Edge> edges = new ArrayList<Edge>();
 
 		public static final int ID_INDEX = 0;
 		public static final int CODE_INDEX = 1;
@@ -33,6 +35,20 @@ public class Stops {
 		public static final int LOC_TYPE_INDEX = 8;
 		public static final int PAREN_STATION_INDEX = 9;
 		public static final int MEMBER_COUNT = 10;
+
+		public Stop(int stopId, int stopCode, String stopName, String stopDesc, float stopLat, float stopLon,
+				String zoneId, String stopUrl, int locationType, int parentStation) {
+			this.stopId = stopId;
+			this.stopCode = stopCode;
+			this.stopName = stopName;
+			this.stopDesc = stopDesc;
+			this.stopLat = stopLat;
+			this.stopLon = stopLon;
+			this.zoneId = zoneId;
+			this.stopUrl = stopUrl;
+			this.locationType = locationType;
+			this.parentStation = parentStation;
+		}
 
 		Stop(String[] csvData) {
 			try { stopId   = Integer.parseInt(csvData[ID_INDEX]); } catch (Exception e) { stopId = 0;   }
@@ -77,6 +93,22 @@ public class Stops {
 			ret.append(", ");
 			ret.append(parentStation);
 			return ret.toString();
+		}
+		
+		@Override
+		public Stops.Stop clone() {
+			return new Stops.Stop(
+					this.stopId,
+					this.stopCode,
+					this.stopName,
+					this.stopDesc,
+					this.stopLat,
+					this.stopLon,
+					this.zoneId,
+					this.stopUrl,
+					this.locationType,
+					this.parentStation);
+			
 		}
 	}
 
@@ -147,5 +179,20 @@ public class Stops {
 				}
 			}
 		}
+	}
+	
+	public static Stops.Stop findStopById(String stopId) {
+		int id = Integer.parseInt(stopId);
+		return findStopById(id);
+	}
+	
+	public static Stops.Stop findStopById(int stopId) {
+		for (Stops.Stop s : stops) {
+			if (s.stopId == stopId){
+				return s;
+			}
+		}
+		// didn't find anything
+		return null;
 	}
 }

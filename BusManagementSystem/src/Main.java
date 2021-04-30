@@ -6,8 +6,8 @@ public class Main {
 	
 	public static void main(String[] args) {
 		// Basic tests for search. @TEMP: Maybe replace with JUnit tests later...
-		busStopSearchTest();
-		arrivalTimeSearchTest();
+		//busStopSearchTest();
+		//arrivalTimeSearchTest();
 		busStopsShortestPathTest();
 		
 		// NOTE(Enda): new Stops(fileLocation) must be called before new BusStopSearch(Stops)

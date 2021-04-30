@@ -27,7 +27,8 @@ JavaFX11 - https://openjfx.io/openjfx-docs/#install-java
 * Wrote about the algorithms implemented in the design document.
 
 ### Cian Mawhhinney
-* Pending
+* Implemented the functionality allowing two bus stops to be chosen, and the shortest path to be calculated, along with the cost associated with it.
+* Wrote the section in the design document about this feature.
 
 ### Cillian Fogarty
 * Implemented the ability to search all valid trips from stop_times.txt, by a user inputted arrival_time, returning full details of all trips matching the criteria (zero, one or more), sorted by trip id.

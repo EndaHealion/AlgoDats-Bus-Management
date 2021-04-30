@@ -1,17 +1,14 @@
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class UserInterface extends Application {
 	
-	public static final int[] SCREEN_DIMENSIONS = { 1280, 720 };
 	public static final String PROGRAM_NAME = "Bus Management System";
 
 	Stage window;
-	BorderPane screenLayout;
-	VBox testPage;
+	public static BorderPane screenLayout;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -22,9 +19,10 @@ public class UserInterface extends Application {
 		window = primaryStage;
 		window.setTitle(PROGRAM_NAME);
 		screenLayout = new BorderPane();
-		Scene scene = new Scene(screenLayout, SCREEN_DIMENSIONS[0], SCREEN_DIMENSIONS[1]);
-		BusStopsShortestPathPage.createPage();
-		screenLayout.setCenter(BusStopsShortestPathPage.getPage());
+		Scene scene = new Scene(screenLayout, ScreenDimensions.SCREEN_WIDTH, ScreenDimensions.SCREEN_HEIGHT);
+		DisplayPage.createPages();
+		screenLayout.setLeft(DisplayPage.buttonPanel);
+		screenLayout.setCenter(WelcomePage.getPage());
 		window.setScene(scene);
 		window.show();
 	}

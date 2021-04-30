@@ -1,6 +1,4 @@
 import java.io.IOException;
-import java.util.ArrayList;
-
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;

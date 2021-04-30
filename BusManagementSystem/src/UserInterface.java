@@ -23,8 +23,8 @@ public class UserInterface extends Application {
 		window.setTitle(PROGRAM_NAME);
 		screenLayout = new BorderPane();
 		Scene scene = new Scene(screenLayout, SCREEN_DIMENSIONS[0], SCREEN_DIMENSIONS[1]);
-		BusStopSearchPage.createPage();
-		screenLayout.setCenter(BusStopSearchPage.getPage());
+		ArrivalTimeSearchPage.createPage();
+		screenLayout.setCenter(ArrivalTimeSearchPage.getPage());
 		window.setScene(scene);
 		window.show();
 	}

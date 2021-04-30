@@ -36,7 +36,7 @@ public class BusStopSearchPage {
 		return page;
 	}
 
-	public static HBox createSearchBar() {
+	private static HBox createSearchBar() {
 		HBox searchBar = new HBox();
 		searchBar.setAlignment(Pos.CENTER);
 		searchBoxTextField = new TextField();

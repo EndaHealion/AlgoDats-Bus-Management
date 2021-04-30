@@ -68,24 +68,27 @@ public class BusStopsShortestPathPage {
 			return;
 		}
 
-		Stops.Stop source = Stops.findStopById(sourceTextField.getText());
-		Stops.Stop destination = Stops.findStopById(destinationTextField.getText());
-
-		Edge[] path = BusStopsShortestPath.shortestPath(source, destination);
-		// if the path is of length 0, there isn't a solution
-
 		searchResults.getItems().clear();
 
-		if (path.length > 0) {
-			searchResults.getItems().add("Cost of journey: " + BusStopsShortestPath.sumCost(path));
-			searchResults.getItems().add("I.D of each stop on path: ");
-			int index = 1;
-			for (Edge e : path) {
-				System.out.print(e.currentStop.stopId + "->");
-				searchResults.getItems().add("" + index + ": " + Integer.toString(e.currentStop.stopId));
-				index++;
+		try {
+			Stops.Stop source = Stops.findStopById(sourceTextField.getText());
+			Stops.Stop destination = Stops.findStopById(destinationTextField.getText());
+
+			Edge[] path = BusStopsShortestPath.shortestPath(source, destination);
+
+			if (path.length > 0) {
+				searchResults.getItems().add("Cost of journey: " + BusStopsShortestPath.sumCost(path));
+				searchResults.getItems().add("I.D of each stop on path: ");
+				int index = 1;
+				for (Edge e : path) {
+					System.out.print(e.currentStop.stopId + "->");
+					searchResults.getItems().add("" + index + ": " + Integer.toString(e.currentStop.stopId));
+					index++;
+				}
+			} else {
+				searchResults.getItems().add(DevSettings.NO_ENTRIES);
 			}
-		} else {
+		} catch (Exception e) {
 			searchResults.getItems().add(DevSettings.NO_ENTRIES);
 		}
 	}

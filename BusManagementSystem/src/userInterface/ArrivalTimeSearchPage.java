@@ -91,7 +91,7 @@ public class ArrivalTimeSearchPage {
 		if (numberOfEntries > 0) {
 			for (int i = 0; i < numberOfEntries; i++) {
 				ArrivalTimeSearch.tripDetails details = tripsAtArrivalTime.get(i);
-				String output = i + ": ";
+				String output = (i + 1) + ": ";
 				output += ArrivalTimeSearch.getTripID(details) + ", ";
 				output += ArrivalTimeSearch.getTripArrivalTime(details) + ", ";
 				output += ArrivalTimeSearch.getTripDepartureTime(details) + ", ";

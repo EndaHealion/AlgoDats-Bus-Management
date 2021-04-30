@@ -19,7 +19,7 @@ JavaFX11 - https://openjfx.io/openjfx-docs/#install-java
 **Part 3** | | | 100% | |
 **Part 4** |  | | | 100% |
 **Demo Video** |  | | | 100% |
-**Design Doc* | 33.3% | 33.3% | 33.3% | |
+**Design Doc** | 33.3% | 33.3% | 33.3% | |
 
 ### Enda Healion:
 Implemented the ability to search for a bus stop by full name or by the first few characters in the name, using a ternary search tree and returning the full stop information for each stop matching the search criteria.

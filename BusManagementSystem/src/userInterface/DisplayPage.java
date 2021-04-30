@@ -1,3 +1,7 @@
+package userInterface;
+
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
@@ -26,29 +30,20 @@ public class DisplayPage {
 	
 	public static VBox createButtonPanel() {
 		VBox buttonPanel = new VBox();
-		
-		Button welcomeButton = new Button(WELCOME);
-		welcomeButton.setOnAction(e -> welcomeButtonFunction());
-		welcomeButton.setMinWidth(BUTTON_WIDTH);
-		welcomeButton.setMinHeight(BUTTON_HEIGHT);
-		
-		Button shortestPathButton = new Button(ROUTE_FINDER);
-		shortestPathButton.setOnAction(e -> shortestPathButtonFunction());
-		shortestPathButton.setMinWidth(BUTTON_WIDTH);
-		shortestPathButton.setMinHeight(BUTTON_HEIGHT);
-		
-		Button busStopSearchButton = new Button(STOP_SEARCH);
-		busStopSearchButton.setOnAction(e -> busStopSearchButtonFunction());
-		busStopSearchButton.setMinWidth(BUTTON_WIDTH);
-		busStopSearchButton.setMinHeight(BUTTON_HEIGHT);
-		
-		Button arrivalTimeSearchButton = new Button(ARRIVAL_TIME_SEARCH);
-		arrivalTimeSearchButton.setOnAction(e -> arrivalTimeSearchButtonFunction());
-		arrivalTimeSearchButton.setMinWidth(BUTTON_WIDTH);
-		arrivalTimeSearchButton.setMinHeight(BUTTON_HEIGHT);
-		
+		Button welcomeButton = createButton(WELCOME, e -> welcomeButtonFunction());
+		Button shortestPathButton = createButton(ROUTE_FINDER, e -> shortestPathButtonFunction());
+		Button busStopSearchButton = createButton(STOP_SEARCH, e -> busStopSearchButtonFunction());
+		Button arrivalTimeSearchButton = createButton(ARRIVAL_TIME_SEARCH, e -> arrivalTimeSearchButtonFunction());
 		buttonPanel.getChildren().addAll(welcomeButton, shortestPathButton, busStopSearchButton, arrivalTimeSearchButton);
 		return buttonPanel;
+	}
+	
+	private static Button createButton(String buttonText, EventHandler<ActionEvent> buttonEvent) {
+		Button button = new Button(buttonText);
+		button.setOnAction(buttonEvent);
+		button.setMinWidth(BUTTON_WIDTH);
+		button.setMinHeight(BUTTON_HEIGHT);
+		return button;
 	}
 	
 	private static void welcomeButtonFunction() {

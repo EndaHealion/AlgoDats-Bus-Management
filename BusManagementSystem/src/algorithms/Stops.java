@@ -1,3 +1,4 @@
+package algorithms;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -113,7 +114,7 @@ public class Stops {
 		}
 	}
 
-	Stops(String fileLocation) {
+	public Stops(String fileLocation) {
 		stops = new ArrayList<Stop>();
 		stopNameIndexMap = new HashMap<String, Integer>();
 		stopIdIndex = new HashMap<Integer, Stop>();

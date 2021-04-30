@@ -1,3 +1,4 @@
+package userInterface;
 
 public class ScreenDimensions {
 	public static final int SCREEN_WIDTH = 1280;

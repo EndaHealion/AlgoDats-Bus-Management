@@ -1,3 +1,4 @@
+package algorithms;
 
 import java.util.ArrayList;
 
@@ -139,7 +140,7 @@ public class BusStopSearch {
 
 	}
 
-	BusStopSearch(ArrayList<Stops.Stop> stops) {
+	public BusStopSearch(ArrayList<Stops.Stop> stops) {
 		searchTree = new TernarySearchTree(stops);
 		isValid = true;
 	}

@@ -1,3 +1,9 @@
+package userInterface;
+
+import algorithms.BusStopsShortestPath;
+import algorithms.Edge;
+import algorithms.Stops;
+
 import java.io.IOException;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;

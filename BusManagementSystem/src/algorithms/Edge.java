@@ -1,7 +1,8 @@
+package algorithms;
 
-class Edge {
+public class Edge {
 		int tripId;
-		Stops.Stop currentStop;
+		public Stops.Stop currentStop;
 		Stops.Stop nextStop;
 		double cost;
 		// LocalTime arrivalTime;

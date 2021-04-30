@@ -1,3 +1,7 @@
+package userInterface;
+
+import algorithms.ArrivalTimeSearch;
+
 import java.util.ArrayList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;

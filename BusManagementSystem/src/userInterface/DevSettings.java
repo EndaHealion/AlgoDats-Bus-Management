@@ -1,3 +1,5 @@
+package userInterface;
+
 import javafx.geometry.Insets;
 
 public class DevSettings {

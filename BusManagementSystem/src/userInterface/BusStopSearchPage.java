@@ -1,3 +1,8 @@
+package userInterface;
+
+import algorithms.BusStopSearch;
+import algorithms.Stops;
+
 import java.util.ArrayList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;

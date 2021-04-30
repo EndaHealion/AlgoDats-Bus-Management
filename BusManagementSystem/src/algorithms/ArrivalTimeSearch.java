@@ -1,3 +1,4 @@
+package algorithms;
 import java.io.*;
 //import java.util.ArrayList;
 import java.util.*;
@@ -46,7 +47,7 @@ public class ArrivalTimeSearch {
 		}
 	}
 	
-	ArrivalTimeSearch(String fileLocation) {
+	public ArrivalTimeSearch(String fileLocation) {
 		trips = extractStopTimesFromFile(fileLocation);
 		if (!validFile) {
 			System.out.println("Invalid File");
